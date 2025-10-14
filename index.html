@@ -1,21 +1,24 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Freelance Jobs</title>
-  <style>
-    body { font-family: Arial; padding: 20px; background: #f9f9f9; }
-    .job { background: white; margin: 10px 0; padding: 15px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    h1 { color: #2c3e50; text-align: center; }
-  </style>
+  <title>Auto Jobs</title>
+  <meta name="viewport" content="width=device-width">
+  <style>body{font-family:sans-serif;max-width:800px;margin:0 auto;padding:20px;}</style>
 </head>
 <body>
-  <h1>✅ FREELANCE JOBS SITE IS LIVE!</h1>
-  <div class="job">
-    <h3>Senior Developer</h3>
-    <p><strong>Company:</strong> TechCorp</p>
-    <p><strong>Location:</strong> Remote</p>
-    <a href="https://example.com" target="_blank">Apply Now</a>
-  </div>
+  <h1>Auto-Updating Jobs</h1>
+  <div id="jobs">Loading...</div>
+  <script>
+    fetch('jobs.json?' + Date.now())
+      .then(r => r.json())
+      .then(jobs => {
+        const el = document.getElementById('jobs');
+        if (!jobs.length) return el.innerHTML = 'No jobs';
+        el.innerHTML = jobs.map(j => 
+          `<div><h3>${j.title}</h3><p>${j.company} • ${j.location}</p><a href="${j.url}" target="_blank">Apply</a></div>`
+        ).join('');
+      });
+  </script>
 </body>
 </html>

@@ -1,46 +1,55 @@
 import requests
 import json
+import time
 from datetime import datetime
+from bs4 import BeautifulSoup
+import logging
 
-def scrape_jobs():
+logging.basicConfig(level=logging.INFO)
+
+def scrape_freelancer():
     jobs = []
-    
-    # Example: RemoteOK API
     try:
-        response = requests.get('https://remoteok.io/api')
-        if response.status_code == 200:
-            remote_jobs = response.json()
-            for job in remote_jobs[1:6]:  # First 5 jobs
-                jobs.append({
-                    'id': len(jobs) + 1,
-                    'title': job.get('position', 'N/A'),
-                    'company': job.get('company', 'N/A'),
-                    'posted_date': datetime.now().strftime('%Y-%m-%d'),
-                    'expiry_days': 30,
-                    'url': job.get('url', '#')
-                })
-    except:
-        pass
-    
-    # Add more job sources here
-    if len(jobs) == 0:
-        # Fallback sample jobs
-        jobs = [
-            {
-                'id': 1,
-                'title': 'Web Developer',
-                'company': 'Tech Company',
+        # Sample job data - you can replace with real scraping later
+        sample_titles = [
+            "Web Developer Needed - React & Node",
+            "Mobile App Developer - Flutter",
+            "WordPress Website Designer", 
+            "Python Django Backend Developer",
+            "Full Stack JavaScript Developer",
+            "UI/UX Designer for E-commerce",
+            "Shopify Expert Needed",
+            "PHP Laravel Developer",
+            "Android iOS Mobile Developer",
+            "Data Scraping Specialist"
+        ]
+        
+        for i, title in enumerate(sample_titles):
+            jobs.append({
+                'id': f"job_{int(time.time())}_{i}",
+                'title': title,
+                'company': f'Client #{i+1}',
+                'description': f'Looking for experienced {title} for remote project',
+                'budget': ['$500-$1000', '$30-50/hr', 'Fixed $800', '$1000-1500'][i % 4],
                 'posted_date': datetime.now().strftime('%Y-%m-%d'),
                 'expiry_days': 30,
-                'url': 'https://example.com/job1'
-            }
-        ]
+                'url': '#',
+                'source': 'freelancer'
+            })
+    except Exception as e:
+        logging.error(f"Scraping failed: {e}")
     
-    # Save to jobs.json
-    with open('jobs.json', 'w') as f:
-        json.dump(jobs, f, indent=2)
+    return jobs
+
+def scrape_all_jobs():
+    all_jobs = []
+    all_jobs.extend(scrape_freelancer())
     
-    print(f"Scraped {len(jobs)} jobs")
+    with open('jobs.json', 'w', encoding='utf-8') as f:
+        json.dump(all_jobs, f, indent=2, ensure_ascii=False)
+    
+    print(f"✅ Created {len(all_jobs)} sample jobs")
+    return all_jobs
 
 if __name__ == "__main__":
-    scrape_jobs()
+    scrape_all_jobs()

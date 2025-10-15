@@ -1,0 +1,3 @@
+SCRAPING_INTERVAL = 24
+JOB_EXPIRY_DAYS = 30
+SOURCES = ['freelancer', 'upwork']
